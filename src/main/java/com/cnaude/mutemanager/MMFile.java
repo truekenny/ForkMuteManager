@@ -1,13 +1,6 @@
 package com.cnaude.mutemanager;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +19,7 @@ public class MMFile {
     final String MUTE_FILE = "muted-players.ser";
 
     private boolean dataFolderExists() {
-        this.dataFolder = new File("plugins/MuteManager");
+        this.dataFolder = new File("plugins/ForkMuteManager");
         if (!this.dataFolder.exists()) {
             this.dataFolder.mkdirs();
         }
@@ -63,8 +56,8 @@ public class MMFile {
         File oldMuteFile = new File(this.dataFolder, OLD_MUTE_FILE);
         File newMuteFile = new File(this.dataFolder, MUTE_FILE);
         if (oldMuteFile.exists()) {
-            ArrayList<String> playerNames = new ArrayList<>();
-            HashMap<String, Long> tmpList = new HashMap<>();            
+            ArrayList<String> playerNames = new ArrayList<String>();
+            HashMap<String, Long> tmpList = new HashMap<String, Long>();
             try {
                 BufferedReader in = new BufferedReader(new FileReader(oldMuteFile));
                 String line;
@@ -98,7 +91,7 @@ public class MMFile {
                 }                
                 oldMuteFile.renameTo(new File(this.dataFolder, OLD_MUTE_FILE + ".preUUID"));
                 return true;
-            } catch (IOException | NumberFormatException e) {
+            } catch (Exception e) {
                 plugin.logError(e.getMessage());
             }            
         }
@@ -106,12 +99,13 @@ public class MMFile {
             plugin.logInfo("Loading mute list from file: " + MUTE_FILE);
             try {
                 FileInputStream fis = new FileInputStream(newMuteFile);
-                try (ObjectInputStream ois = new ObjectInputStream(fis)) {
+                try {
+                    ObjectInputStream ois = new ObjectInputStream(fis);
                     plugin.mList = (ArrayList<MutedPlayer>) ois.readObject();
                     ois.close();
                     fis.close();
-                }
-            } catch (IOException | ClassNotFoundException ex) {
+                } catch (Exception e) {}
+            } catch (Exception ex) {
                 plugin.logError(ex.getMessage());
                 return false;
             }

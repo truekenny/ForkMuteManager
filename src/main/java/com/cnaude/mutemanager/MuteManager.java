@@ -5,11 +5,17 @@
 package com.cnaude.mutemanager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.google.common.collect.Lists;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,7 +27,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class MuteManager extends JavaPlugin {
 
     // Mute list is stored as playername and milliseconds
-    public ArrayList<MutedPlayer> mList = new ArrayList<>();
+    public ArrayList<MutedPlayer> mList = new ArrayList<MutedPlayer>();
     private final MMListeners mmListeners = new MMListeners(this);
     public boolean configLoaded = false;
     public static MMConfig config;
@@ -156,7 +162,7 @@ public class MuteManager extends JavaPlugin {
             } else {
                 logInfo(pName + " has been unmuted!");
                 if (!config.msgYouHaveBeenMuted().isEmpty()) {
-                    for (Player player : getServer().getOnlinePlayers()) {
+                    for (Player player : getOnlinePlayers()) {
                         if (player.getName().equals(pName)) {
                             player.sendMessage(config.msgYouHaveBeenUnMuted());
                             break;
@@ -238,7 +244,7 @@ public class MuteManager extends JavaPlugin {
     }
 
     public Player lookupPlayer(String pName) {
-        for (Player player : getServer().getOnlinePlayers()) {
+        for (Player player : getOnlinePlayers()) {
             if (player.getName().equals(pName) && config.reqFullName()) {
                 return player;
             }
@@ -248,4 +254,17 @@ public class MuteManager extends JavaPlugin {
         }
         return null;
     }
+
+    /**
+     * @return Список игроков онлайн
+     */
+    public static List<Player> getOnlinePlayers() {
+        List<Player> list = Lists.newArrayList();
+        for (World world : Bukkit.getWorlds()) {
+            list.addAll(world.getPlayers());
+        }
+
+        return Collections.unmodifiableList(list);
+    }
+
 }

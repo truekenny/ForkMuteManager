@@ -66,15 +66,15 @@ public class MMCommandMute implements CommandExecutor {
                         plugin.logDebug("M5");
                         return false;
                     }
-                    switch (m.group(2)) {
-                        case "d":
-                            plugin.logDebug("Muting for " + m.group(1) + " day(s).");
-                            muteTime = muteTime * 1440;
-                            break;
-                        case "h":
-                            plugin.logDebug("Muting for " + m.group(1) + " hour(s).");
-                            muteTime = muteTime * 60;
-                            break;
+                    String s = m.group(2);
+                    if (s.equals("d")) {
+                        plugin.logDebug("Muting for " + m.group(1) + " day(s).");
+                        muteTime = muteTime * 1440;
+
+                    } else if (s.equals("h")) {
+                        plugin.logDebug("Muting for " + m.group(1) + " hour(s).");
+                        muteTime = muteTime * 60;
+
                     }
                 } else {
                     try {
@@ -100,7 +100,7 @@ public class MMCommandMute implements CommandExecutor {
                 plugin.mutePlayer(player, muteTime, sender, reason);
             }
         } else {
-            for (Player player : plugin.getServer().getOnlinePlayers()) {
+            for (Player player : plugin.getOnlinePlayers()) {
                 if (player.getName().equals(pName)) {
                     plugin.mutePlayer(player, muteTime, sender, reason);
                     return true;

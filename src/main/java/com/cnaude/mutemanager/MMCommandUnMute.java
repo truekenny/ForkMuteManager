@@ -36,7 +36,7 @@ public class MMCommandUnMute implements CommandExecutor {
         if (args.length == 1) {    
             String pName = args[0];
             if (pName.equals("*")) {
-                ArrayList<String> unMuteList = new ArrayList<>();            
+                ArrayList<String> unMuteList = new ArrayList<String>();
                 for (MutedPlayer mutedPlayer : plugin.mList) {                                  
                         unMuteList.add(mutedPlayer.getPlayerName());                       
                 }
