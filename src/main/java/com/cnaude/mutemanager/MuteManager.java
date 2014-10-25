@@ -270,4 +270,19 @@ public class MuteManager extends JavaPlugin {
         return Collections.unmodifiableList(list);
     }
 
+    /**
+     * Проверяет заглушен ли пользователь по нику
+     * @param nick Ник
+     * @return Флаг
+     */
+    public boolean isMuted(String nick) {
+        for (MutedPlayer mutedPlayer : mList) {
+            if (mutedPlayer.getPlayerName().equalsIgnoreCase(nick)) {
+                return mutedPlayer.isMuted();
+            }
+        }
+        return false;
+    }
+
+
 }
