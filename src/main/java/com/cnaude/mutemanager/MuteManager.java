@@ -49,6 +49,9 @@ public class MuteManager extends JavaPlugin {
         getCommand("mutelist").setExecutor(new MMCommandMuteList(this));
         getCommand("mutereload").setExecutor(new MMCommandReload(this));
         getServer().getPluginManager().registerEvents(mmListeners, this);
+
+        getServer().getPluginManager().registerEvents(new DynmapListener(this), this);
+
         mmLoop = new MMLoop(this);
     }
 
