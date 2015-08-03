@@ -4,10 +4,13 @@
  */
 package com.cnaude.mutemanager;
 
-import java.util.Arrays;
-import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
 /**
  *
@@ -16,7 +19,10 @@ import org.bukkit.configuration.Configuration;
 public final class MMConfig {
     private final Configuration config;
     private final MuteManager plugin;
-    
+
+    private Hashtable<String, String> wrongWords = new Hashtable<String, String>();
+    final public String FILENAME = "plugins/ForkMuteManager/wrongWords.txt";
+
     private static final String GLOBAL_NOTIFY            = "Global.Notify";
     private static final String DEFAULT_TIME             = "Global.DefaultTime";
     private static final String DEFAULT_REASON           = "Global.DefaultReason";
@@ -83,7 +89,9 @@ public final class MMConfig {
     }
     
     public void loadValues() {   
-        debugEnabled     = config.getBoolean(GLOBAL_DEBUG, false);        
+        debugEnabled     = config.getBoolean(GLOBAL_DEBUG, false);
+
+        loadWrongWords();
         
         shouldNotify  = config.getBoolean(GLOBAL_NOTIFY, true);                
         defaultTime   = config.getInt(DEFAULT_TIME, 5);       
@@ -115,7 +123,59 @@ public final class MMConfig {
         msgAlreadyMuted = config.getString(MSG_ALREADY);
                
     }
-    
+
+    private void loadWrongWords() {
+        plugin.logInfo("Load wrong words");
+
+        wrongWords.clear();
+
+        BufferedReader br = null;
+
+        try {
+
+            String sCurrentLine;
+
+            br = new BufferedReader(new FileReader(FILENAME));
+
+            while ((sCurrentLine = br.readLine()) != null) {
+                StringTokenizer st = new StringTokenizer(sCurrentLine);
+                String word = st.nextToken(",");
+                String reason = st.nextToken(",");
+
+                wrongWords.put(word, reason);
+
+            }
+
+        } catch (IOException e) {
+            plugin.logInfo("File " + FILENAME + " not found");
+        } finally {
+            try {
+                if (br != null) br.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public String needMuteIt(String phrase) {
+        Enumeration<String> e = wrongWords.keys();
+        while (e.hasMoreElements()) {
+            String word = e.nextElement().toLowerCase();
+            String reason = wrongWords.get(word);
+
+            plugin.logInfo("'" + word + "' => '" + reason + "'");
+            if ((" " + phrase + " ").toLowerCase().contains(word)) {
+
+                plugin.logInfo("MUTED: " + reason);
+
+                return reason;
+            }
+        }
+
+        return null;
+    }
+
+
     public boolean shouldNotify() {
         return shouldNotify;
     }

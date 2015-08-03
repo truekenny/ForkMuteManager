@@ -1,6 +1,5 @@
 package com.cnaude.mutemanager;
 
-import static com.cnaude.mutemanager.MuteManager.config;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -9,6 +8,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+
+import static com.cnaude.mutemanager.MuteManager.config;
 
 /**
  *
@@ -25,6 +26,12 @@ public class MMListeners implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
+
+        String reason = plugin.getMConfig().needMuteIt(event.getMessage());
+        if (reason != null) {
+            plugin.mutePlayer(event.getPlayer(), 60L * 5, plugin.getServer().getConsoleSender(), reason);
+        }
+
         if (plugin.isMuted(player)) {
             MutedPlayer mutedPlayer = plugin.getMutedPlayer(player);
             if (mutedPlayer == null) {
