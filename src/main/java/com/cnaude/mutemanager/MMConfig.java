@@ -163,7 +163,7 @@ public final class MMConfig {
             String word = e.nextElement().toLowerCase();
             String reason = wrongWords.get(word);
 
-            plugin.logInfo("'" + word + "' => '" + reason + "'");
+            // plugin.logInfo("'" + word + "' => '" + reason + "'");
             if ((" " + phrase + " ").toLowerCase().contains(word)) {
 
                 plugin.logInfo("MUTED: " + reason);
