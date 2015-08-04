@@ -20,7 +20,7 @@ public final class MMConfig {
     private final Configuration config;
     private final MuteManager plugin;
 
-    private Hashtable<String, String> wrongWords = new Hashtable<String, String>();
+    private Hashtable<String, String[]> wrongWords = new Hashtable<String, String[]>();
     final public String FILENAME = "plugins/ForkMuteManager/wrongWords.txt";
 
     private static final String GLOBAL_NOTIFY            = "Global.Notify";
@@ -141,8 +141,11 @@ public final class MMConfig {
                 StringTokenizer st = new StringTokenizer(sCurrentLine);
                 String word = st.nextToken(",");
                 String reason = st.nextToken(",");
+                String type = st.hasMoreTokens() ? st.nextToken(",") : "mute";
+                String time = st.hasMoreTokens() ? st.nextToken(",") : "0";
 
-                wrongWords.put(word, reason);
+                String[] data = {reason, type, time};
+                wrongWords.put(word, data);
 
             }
 
@@ -157,18 +160,18 @@ public final class MMConfig {
         }
     }
 
-    public String needMuteIt(String phrase) {
+    public String[] needHitIt(String phrase) {
         Enumeration<String> e = wrongWords.keys();
         while (e.hasMoreElements()) {
             String word = e.nextElement().toLowerCase();
-            String reason = wrongWords.get(word);
+            String[] data = wrongWords.get(word);
 
             // plugin.logInfo("'" + word + "' => '" + reason + "'");
             if ((" " + phrase + " ").toLowerCase().contains(word)) {
 
-                plugin.logInfo("MUTED: " + reason);
+                plugin.logInfo("MUTED: " + data[0]);
 
-                return reason;
+                return data;
             }
         }
 
