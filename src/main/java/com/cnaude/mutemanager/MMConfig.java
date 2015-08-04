@@ -142,10 +142,11 @@ public final class MMConfig {
                 String word = st.nextToken(",");
                 String reason = st.nextToken(",");
                 String type = st.hasMoreTokens() ? st.nextToken(",") : "mute";
-                String time = st.hasMoreTokens() ? st.nextToken(",") : "0";
+                String minutes = st.hasMoreTokens() ? st.nextToken(",") : "0";
 
-                String[] data = {reason, type, time};
+                String[] data = {reason, type, minutes};
                 wrongWords.put(word, data);
+                plugin.logInfo("ADD: " + word + ", " + reason + ", " + type + ", " + minutes);
 
             }
 
