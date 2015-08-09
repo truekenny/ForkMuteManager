@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -48,6 +50,8 @@ public class MMCommandMute implements CommandExecutor {
                 reason = reason + " " + args[x];
             }
         }
+        reason = StringUtils.strip(reason, " ");
+
         if (reason.isEmpty()) {
             reason = plugin.getMConfig().defaultReason();
         }
