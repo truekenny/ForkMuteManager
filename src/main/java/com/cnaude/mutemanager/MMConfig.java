@@ -138,11 +138,20 @@ public final class MMConfig {
             br = new BufferedReader(new FileReader(FILENAME));
 
             while ((sCurrentLine = br.readLine()) != null) {
+                if (sCurrentLine.equals("")) {
+                    continue;
+                }
+                if (!sCurrentLine.contains("|")) {
+                    plugin.logInfo("Please replace ',' -> '|' in wrongWords.txt");
+
+                    break;
+                }
+
                 StringTokenizer st = new StringTokenizer(sCurrentLine);
-                String word = st.nextToken(",");
-                String reason = st.nextToken(",");
-                String type = st.hasMoreTokens() ? st.nextToken(",") : "mute";
-                String minutes = st.hasMoreTokens() ? st.nextToken(",") : "0";
+                String word = st.nextToken("|");
+                String reason = st.nextToken("|");
+                String type = st.hasMoreTokens() ? st.nextToken("|") : "mute";
+                String minutes = st.hasMoreTokens() ? st.nextToken("|") : "0";
 
                 String[] data = {reason, type, minutes};
                 wrongWords.put(word, data);
@@ -164,16 +173,29 @@ public final class MMConfig {
     public String[] needHitIt(String phrase) {
         Enumeration<String> e = wrongWords.keys();
         while (e.hasMoreElements()) {
-            String word = e.nextElement().toLowerCase();
+            String word = e.nextElement();
             String[] data = wrongWords.get(word);
 
-            // plugin.logInfo("'" + word + "' => '" + reason + "'");
-            if ((" " + phrase + " ").toLowerCase().contains(word)) {
+            if (word.charAt(0) == '/') {
+                // regexp
 
-                plugin.logInfo("MUTED: " + data[0]);
+                if((phrase).matches(word.substring(1))) {
 
-                return data;
+                    plugin.logInfo("MUTED: " + data[0]);
+
+                    return data;
+                }
+            } else {
+                // string
+
+                if ((" " + phrase + " ").toLowerCase().contains(word.toLowerCase())) {
+
+                    plugin.logInfo("MUTED: " + data[0]);
+
+                    return data;
+                }
             }
+
         }
 
         return null;

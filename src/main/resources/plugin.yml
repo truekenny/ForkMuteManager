@@ -1,5 +1,5 @@
 name: ForkMuteManager
-version: 1.0.2
+version: 1.0.3
 description: CraftBukkit plugin that allows admins to mute players.
 author: Chris Naude (forked by Truekenny, Dynmap support)
 main: com.cnaude.mutemanager.MuteManager

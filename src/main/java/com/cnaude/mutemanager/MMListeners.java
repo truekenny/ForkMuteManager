@@ -41,9 +41,10 @@ public class MMListeners implements Listener {
             event.setCancelled(true);
             plugin.logInfo("GOAWAY: " + event.getPlayer().getDisplayName() + ": " + event.getMessage());
 
-            final String reason = data[0];
+            final String reason = data[0] + " (" + event.getMessage() + ")";
             String type = data[1];
             int minutes = Integer.parseInt(data[2]);
+
             if (type.equals("mute")) {
                 minutes = (minutes == 0) ? 60 * 5 : minutes;
                 plugin.mutePlayer(event.getPlayer(), (long) minutes, plugin.getServer().getConsoleSender(), reason);
